@@ -1,0 +1,62 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    color: #0f172a;
+    background-color: #090d16;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@keyframes rain-fall {
+  0% { transform: translateY(-100px) translateX(0); opacity: 0; }
+  20% { opacity: 0.8; }
+  90% { opacity: 0.8; }
+  100% { transform: translateY(100vh) translateX(-20px); opacity: 0; }
+}
+
+@keyframes snow-drift {
+  0% { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 0; }
+  20% { opacity: 0.9; }
+  80% { opacity: 0.9; }
+  100% { transform: translateY(100vh) translateX(40px) rotate(360deg); opacity: 0; }
+}
+
+@keyframes cloud-move {
+  0% { transform: translateX(-15%); }
+  50% { transform: translateX(15%); }
+  100% { transform: translateX(-15%); }
+}
+
+@keyframes lightning-flash {
+  0%, 93%, 97%, 100% { opacity: 0; }
+  94%, 96% { opacity: 0.85; }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.12); opacity: 0.95; }
+}
+
+.anim-rain {
+  animation: rain-fall linear infinite;
+}
+
+.anim-snow {
+  animation: snow-drift linear infinite;
+}
+
+.anim-cloud {
+  animation: cloud-move 35s ease-in-out infinite alternate;
+}
+
+.anim-lightning {
+  animation: lightning-flash 8s ease-in-out infinite;
+}
+
+.anim-sun {
+  animation: sun-pulse 6s ease-in-out infinite;
+}
