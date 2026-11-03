@@ -40,7 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
           }}
           className="text-left font-bold tracking-tight text-slate-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 transition-colors whitespace-nowrap shrink-0 flex items-center gap-2 cursor-pointer"
         >
-          <span className="text-xl font-extrabold tracking-tight">날씨 검증 게임</span>
+          <span className="text-xl font-extrabold tracking-tight">날씨 게임</span>
           <span className="hidden sm:inline-block text-xs font-mono text-sky-600 dark:text-sky-400/80 font-normal">
             Weather Detective
           </span>
