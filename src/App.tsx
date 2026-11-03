@@ -30,11 +30,38 @@ export default function App() {
     }
   });
 
+  // Theme state with localStorage persistence
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    try {
+      const savedTheme = localStorage.getItem('weather_game_theme');
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        return savedTheme;
+      }
+      return 'dark'; // Default dark theme for deep atmosphere
+    } catch {
+      return 'dark';
+    }
+  });
+
   const [atmosphereCondition, setAtmosphereCondition] = useState<LiveWeatherData['weatherCondition']>('cloudy');
   const [isDay, setIsDay] = useState<boolean>(true);
   const [isMuted, setIsMuted] = useState<boolean>(soundFX.getMuted());
   const [isRainAmbience, setIsRainAmbience] = useState<boolean>(false);
   const [showSummaryModal, setShowSummaryModal] = useState<boolean>(false);
+
+  // Sync document.documentElement with theme class
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    try {
+      localStorage.setItem('weather_game_theme', theme);
+    } catch {
+      // Ignore
+    }
+  }, [theme]);
 
   // Sync scoreState with localStorage
   useEffect(() => {
@@ -44,6 +71,11 @@ export default function App() {
       // Ignore
     }
   }, [scoreState]);
+
+  const handleToggleTheme = () => {
+    soundFX.playClick();
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
 
   const handleScoreUpdate = (
     points: number,
@@ -90,11 +122,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col relative text-slate-100 font-sans selection:bg-sky-500 selection:text-slate-950">
+    <div className="min-h-screen flex flex-col relative text-slate-900 dark:text-slate-100 font-sans selection:bg-sky-500 selection:text-slate-950 transition-colors duration-300">
       {/* Dynamic Weather Sky & Particle Atmosphere */}
-      <WeatherAtmosphere condition={atmosphereCondition} isDay={isDay} />
+      <WeatherAtmosphere condition={atmosphereCondition} isDay={isDay} theme={theme} />
 
-      {/* Header Contract */}
+      {/* Header Contract with Theme Toggle */}
       <Header
         currentMode={currentMode}
         onSelectMode={mode => setCurrentMode(mode)}
@@ -102,6 +134,8 @@ export default function App() {
         onToggleMute={handleToggleMute}
         isRainAmbience={isRainAmbience}
         onToggleRainAmbience={handleToggleRainAmbience}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
         score={scoreState.score}
         streak={scoreState.streak}
       />
@@ -110,10 +144,10 @@ export default function App() {
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 flex flex-col justify-between">
         
         {/* Mode Description & Scoreboard floating strip */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-3 px-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 backdrop-blur-md mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 py-3 px-5 rounded-2xl bg-white/85 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800/80 backdrop-blur-md mb-6 shadow-xs">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-sky-400" />
-            <div className="text-xs sm:text-sm text-slate-300">
+            <span className="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-sky-400" />
+            <div className="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
               {currentMode === 'REALTIME_FACT' && (
                 <span>실시간 전 세계 기상관측소 실측 데이터를 기반으로 팩트를 검증합니다.</span>
               )}
@@ -134,9 +168,9 @@ export default function App() {
               soundFX.playClick();
               setShowSummaryModal(true);
             }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-sky-300 border border-slate-700 transition-colors ml-auto"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold text-sky-700 dark:text-sky-300 border border-slate-200 dark:border-slate-700 transition-colors ml-auto cursor-pointer"
           >
-            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <Trophy className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
             <span>내 계급 & 기록 리포트 ({scoreState.totalAnswered}회 검증)</span>
           </button>
         </div>
@@ -175,11 +209,11 @@ export default function App() {
         </div>
 
         {/* Footer */}
-        <footer className="mt-12 py-6 border-t border-slate-800/80 text-center text-xs text-slate-500 font-mono flex flex-col sm:flex-row items-center justify-between gap-4">
+        <footer className="mt-12 py-6 border-t border-slate-200 dark:border-slate-800/80 text-center text-xs text-slate-500 dark:text-slate-500 font-mono flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <span>실시간 기상 데이터: Open-Meteo & WMO Meteorological Network</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-400">
+          <div className="flex items-center gap-4 text-slate-600 dark:text-slate-400">
             <span>총 {scoreState.totalAnswered}회 검증 완료</span>
             <span aria-hidden="true">·</span>
             <span>정답 {scoreState.correctCount}회</span>

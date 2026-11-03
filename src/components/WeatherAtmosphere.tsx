@@ -4,9 +4,10 @@ import { LiveWeatherData } from '../types/weather';
 interface Props {
   condition?: LiveWeatherData['weatherCondition'];
   isDay?: boolean;
+  theme?: 'light' | 'dark';
 }
 
-export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay = true }) => {
+export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay = true, theme = 'dark' }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -68,7 +69,9 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
           lightningTimer = 0;
         }
         if (lightningFlash > 0) {
-          ctx.fillStyle = `rgba(224, 231, 255, ${lightningFlash})`;
+          ctx.fillStyle = theme === 'dark' 
+            ? `rgba(224, 231, 255, ${lightningFlash})` 
+            : `rgba(255, 255, 255, ${lightningFlash})`;
           ctx.fillRect(0, 0, width, height);
           lightningFlash -= 0.05;
         }
@@ -76,7 +79,9 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
 
       // Rain render
       if (condition === 'rain' || condition === 'thunder') {
-        ctx.strokeStyle = condition === 'thunder' ? 'rgba(186, 230, 253, 0.5)' : 'rgba(125, 211, 252, 0.45)';
+        ctx.strokeStyle = theme === 'dark'
+          ? (condition === 'thunder' ? 'rgba(186, 230, 253, 0.5)' : 'rgba(125, 211, 252, 0.45)')
+          : (condition === 'thunder' ? 'rgba(56, 189, 248, 0.65)' : 'rgba(2, 132, 199, 0.45)');
         ctx.lineWidth = 1.2;
         ctx.beginPath();
         for (const p of particles) {
@@ -101,7 +106,9 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
             p.angle += p.spin;
             ctx.rotate(p.angle);
           }
-          ctx.fillStyle = `rgba(248, 250, 252, ${p.opacity})`;
+          ctx.fillStyle = theme === 'dark'
+            ? `rgba(248, 250, 252, ${p.opacity})`
+            : `rgba(186, 230, 253, ${p.opacity * 0.9})`;
           ctx.beginPath();
           ctx.arc(0, 0, p.size, 0, Math.PI * 2);
           ctx.fill();
@@ -120,8 +127,10 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
       if (condition === 'clear' || condition === 'cloudy' || condition === 'fog') {
         for (const p of particles) {
           ctx.fillStyle = condition === 'clear'
-            ? isDay ? `rgba(253, 224, 71, ${p.opacity * 0.18})` : `rgba(224, 231, 255, ${p.opacity * 0.25})`
-            : `rgba(203, 213, 225, ${p.opacity * 0.12})`;
+            ? isDay 
+              ? (theme === 'dark' ? `rgba(253, 224, 71, ${p.opacity * 0.18})` : `rgba(234, 179, 8, ${p.opacity * 0.22})`) 
+              : (theme === 'dark' ? `rgba(224, 231, 255, ${p.opacity * 0.25})` : `rgba(99, 102, 241, ${p.opacity * 0.15})`)
+            : (theme === 'dark' ? `rgba(203, 213, 225, ${p.opacity * 0.12})` : `rgba(148, 163, 184, ${p.opacity * 0.2})`);
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.size * 22, 0, Math.PI * 2);
           ctx.fill();
@@ -144,10 +153,31 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animId);
     };
-  }, [condition, isDay]);
+  }, [condition, isDay, theme]);
 
-  // Distinct background gradients based on weather condition
+  // Distinct background gradients based on weather condition and theme
   const getBackgroundGradient = () => {
+    if (theme === 'light') {
+      switch (condition) {
+        case 'clear':
+          return isDay
+            ? 'bg-gradient-to-b from-sky-200 via-sky-50 to-slate-100'
+            : 'bg-gradient-to-b from-indigo-200 via-sky-100 to-slate-100';
+        case 'rain':
+          return 'bg-gradient-to-b from-slate-300 via-sky-100 to-slate-100';
+        case 'thunder':
+          return 'bg-gradient-to-b from-slate-400 via-indigo-200 to-slate-200';
+        case 'snow':
+          return 'bg-gradient-to-b from-cyan-100 via-slate-100 to-sky-50';
+        case 'fog':
+          return 'bg-gradient-to-b from-slate-200 via-zinc-100 to-slate-100';
+        case 'cloudy':
+        default:
+          return 'bg-gradient-to-b from-slate-200 via-sky-50 to-slate-100';
+      }
+    }
+
+    // Dark Mode Gradients
     switch (condition) {
       case 'clear':
         return isDay
@@ -171,10 +201,14 @@ export const WeatherAtmosphere: React.FC<Props> = ({ condition = 'cloudy', isDay
     <div className={`fixed inset-0 pointer-events-none transition-colors duration-1000 ${getBackgroundGradient()} -z-10 overflow-hidden`}>
       {/* Decorative ambient lighting glow */}
       {condition === 'clear' && isDay && (
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none anim-sun" />
+        <div className={`absolute top-0 right-1/4 w-96 h-96 rounded-full blur-3xl pointer-events-none anim-sun ${
+          theme === 'light' ? 'bg-amber-300/30' : 'bg-amber-400/10'
+        }`} />
       )}
       {condition === 'thunder' && (
-        <div className="absolute top-1/3 left-1/3 w-[32rem] h-[32rem] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className={`absolute top-1/3 left-1/3 w-[32rem] h-[32rem] rounded-full blur-3xl pointer-events-none ${
+          theme === 'light' ? 'bg-indigo-300/25' : 'bg-indigo-500/10'
+        }`} />
       )}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
     </div>

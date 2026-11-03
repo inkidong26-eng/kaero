@@ -2,12 +2,24 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+  :root.dark {
+    color-scheme: dark;
+  }
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    color: #0f172a;
-    background-color: #090d16;
     user-select: none;
     -webkit-font-smoothing: antialiased;
+    background-color: #f8fafc;
+    color: #0f172a;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  .dark body,
+  body:where(.dark, .dark *) {
+    background-color: #090d16;
+    color: #f8fafc;
   }
 }
 

@@ -104,15 +104,15 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+      <div className="bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-xl shadow-xl dark:shadow-2xl relative overflow-hidden">
         
         {/* Progress & Category Top Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-slate-800/80">
+        <div className="flex flex-wrap items-center justify-between gap-4 pb-5 border-b border-slate-200 dark:border-slate-800/80">
           <div className="flex items-center gap-3">
-            <span className="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/10 text-sky-300 border border-sky-500/30">
+            <span className="text-xs font-mono px-2.5 py-1 rounded bg-sky-500/15 dark:bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-300 dark:border-sky-500/30">
               {currentQ.category}
             </span>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
               문제 {questionIndex + 1} / {shuffledQuestions.length}
             </span>
           </div>
@@ -122,10 +122,10 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
               <button
                 onClick={handleUse5050}
                 disabled={used5050}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
                   used5050
-                    ? 'opacity-40 cursor-not-allowed bg-slate-800 border-slate-700 text-slate-500'
-                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20'
+                    ? 'opacity-40 cursor-not-allowed bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500'
+                    : 'bg-amber-500/15 dark:bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-500/30 hover:bg-amber-500/25 dark:hover:bg-amber-500/20'
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -137,10 +137,10 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
 
         {/* Question Title & Scenario */}
         <div className="my-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white mb-3">
             {currentQ.title}
           </h2>
-          <p className="text-base text-slate-300 leading-relaxed bg-slate-950/60 p-5 rounded-xl border border-slate-800/80">
+          <p className="text-base text-slate-800 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950/60 p-5 rounded-xl border border-slate-200 dark:border-slate-800/80">
             {currentQ.scenario}
           </p>
         </div>
@@ -152,18 +152,18 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
             const isSelected = selectedOption === idx;
             const isCorrect = idx === currentQ.correctIndex;
 
-            let buttonStyle = 'bg-slate-800/80 hover:bg-slate-800 text-slate-200 border-slate-700 hover:border-slate-600';
+            let buttonStyle = 'bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600';
 
             if (isAnswered) {
               if (isCorrect) {
-                buttonStyle = 'bg-emerald-950/60 border-emerald-500/60 text-emerald-200';
+                buttonStyle = 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-400 dark:border-emerald-500/60 text-emerald-900 dark:text-emerald-200';
               } else if (isSelected && !isCorrect) {
-                buttonStyle = 'bg-rose-950/60 border-rose-500/60 text-rose-200';
+                buttonStyle = 'bg-rose-50 dark:bg-rose-950/60 border-rose-400 dark:border-rose-500/60 text-rose-900 dark:text-rose-200';
               } else {
-                buttonStyle = 'bg-slate-900/60 border-slate-800 text-slate-500 opacity-60';
+                buttonStyle = 'bg-slate-100/60 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500 opacity-60';
               }
             } else if (isEliminated) {
-              buttonStyle = 'opacity-25 pointer-events-none line-through bg-slate-900 border-slate-800 text-slate-600';
+              buttonStyle = 'opacity-25 pointer-events-none line-through bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-600';
             }
 
             return (
@@ -171,12 +171,12 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
                 key={idx}
                 disabled={isAnswered || isEliminated}
                 onClick={() => handleSelectOption(idx)}
-                className={`w-full p-4 rounded-xl border text-left flex items-center justify-between gap-4 transition-all duration-150 ${buttonStyle} ${
+                className={`w-full p-4 rounded-xl border text-left flex items-center justify-between gap-4 transition-all duration-150 cursor-pointer ${buttonStyle} ${
                   !isAnswered && !isEliminated ? 'hover:translate-x-1' : ''
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-7 h-7 rounded-lg bg-slate-900/80 border border-slate-700/60 flex items-center justify-center text-xs font-mono font-bold shrink-0">
+                  <span className="w-7 h-7 rounded-lg bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-700/60 flex items-center justify-center text-xs font-mono font-bold text-slate-700 dark:text-slate-300 shrink-0 shadow-2xs">
                     {idx + 1}
                   </span>
                   <span className="text-sm sm:text-base font-medium">
@@ -187,9 +187,9 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
                 {isAnswered && (
                   <div className="shrink-0">
                     {isCorrect ? (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     ) : isSelected ? (
-                      <XCircle className="w-5 h-5 text-rose-400" />
+                      <XCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
                     ) : null}
                   </div>
                 )}
@@ -200,16 +200,16 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
 
         {/* Explanation Dossier when answered */}
         {isAnswered && (
-          <div className="mt-6 p-5 rounded-xl bg-slate-950/90 border border-slate-800 animate-in fade-in duration-200">
-            <div className="flex items-center gap-2 text-xs font-semibold text-sky-400 mb-2">
+          <div className="mt-6 p-5 rounded-xl bg-slate-50/95 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 animate-in fade-in duration-200">
+            <div className="flex items-center gap-2 text-xs font-semibold text-sky-600 dark:text-sky-400 mb-2 font-mono">
               <BookOpen className="w-4 h-4" />
               <span>기상 과학 분석 해설</span>
             </div>
-            <p className="text-sm text-slate-300 leading-relaxed">
+            <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
               {currentQ.explanation}
             </p>
             {currentQ.sourceNote && (
-              <div className="mt-3 pt-3 border-t border-slate-800/80 text-[11px] text-slate-500 font-mono">
+              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800/80 text-[11px] text-slate-400 dark:text-slate-500 font-mono">
                 출처/근거: {currentQ.sourceNote}
               </div>
             )}
@@ -217,7 +217,7 @@ export const MeteorologyTriviaGame: React.FC<Props> = ({ onScoreUpdate, streak }
             <div className="flex justify-end mt-4">
               <button
                 onClick={handleNextQuestion}
-                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-lg shadow-sky-500/20"
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm transition-all hover:scale-105 active:scale-95 shadow-md shadow-sky-500/20 cursor-pointer"
               >
                 <span>다음 기상 과학 문제</span>
                 <ArrowRight className="w-4 h-4" />
